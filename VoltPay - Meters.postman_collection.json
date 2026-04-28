@@ -1,0 +1,56 @@
+{
+  "info": {
+    "name": "VoltPay - Meters",
+    "_postman_id": "9c7d7d32-7e2a-4c7f-9c7a-9f9f9f9f9f9f",
+    "description": "Meters endpoints (verify + save meter). Requires Sanctum Bearer token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Verify meter (valid)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"provider_id\": {{provider_id}},\n  \"meter_number\": \"12345678\",\n  \"alias\": \"Home\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/meters/verify",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meters", "verify"]
+        }
+      }
+    },
+    {
+      "name": "Verify meter (invalid mock)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"provider_id\": {{provider_id}},\n  \"meter_number\": \"invalid\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/meters/verify",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meters", "verify"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" },
+    { "key": "provider_id", "value": "1" }
+  ]
+}
+
