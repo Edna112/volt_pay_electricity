@@ -43,4 +43,10 @@ return [
         'webhook_secret' => env('ORANGE_WEBHOOK_SECRET'),
     ],
 
+    'fapshi' => [
+        'base_url' => env('FAPSHI_BASE_URL', 'https://sandbox.fapshi.com'),
+        'apiuser' => env('FAPSHI_APIUSER'),
+        'apikey' => env('FAPSHI_APIKEY'),
+    ],
+
 ];

@@ -2,7 +2,7 @@
   "info": {
     "name": "VoltPay - Meters",
     "_postman_id": "9c7d7d32-7e2a-4c7f-9c7a-9f9f9f9f9f9f",
-    "description": "Auth (register/login/refresh/logout) and meters/verify. Use access token as Bearer; store refresh_token for /api/refresh.",
+    "description": "Auth (register/login/refresh/logout), meters/verify, Fapshi Direct Pay, and Fapshi webhook (simulated). Use access token as Bearer; store refresh_token for /api/refresh.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -45,7 +45,20 @@
               "host": ["{{base_url}}"],
               "path": ["api", "login"]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.access_token) pm.collectionVariables.set('token', json.access_token);",
+                  "if (json && json.refresh_token) pm.collectionVariables.set('refresh_token', json.refresh_token);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Refresh token",
@@ -78,6 +91,73 @@
               "raw": "{{base_url}}/api/logout",
               "host": ["{{base_url}}"],
               "path": ["api", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Fapshi Direct Pay",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meter_id\": {{meter_id}},\n  \"amount\": {{amount}},\n  \"reference\": \"{{reference}}\",\n  \"phone\": \"{{phone}}\",\n  \"medium\": \"{{medium}}\",\n  \"message\": \"Electricity payment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments/direct-pay",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "direct-pay"]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const now = Date.now();",
+                  "pm.collectionVariables.set('reference', `ORDER-${now}`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  \"const json = pm.response.json();\",
+                  \"const transId = json?.transaction?.gateway_reference || json?.gateway?.transId;\",
+                  \"if (transId) pm.collectionVariables.set('fapshi_transId', transId);\"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Fapshi Webhook (simulate SUCCESSFUL)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transId\": \"{{fapshi_transId}}\",\n  \"status\": \"SUCCESSFUL\"\n}"
+            },
+            "url": {
+              "raw": "{{public_url}}/api/webhooks/fapshi/{{fapshi_webhook_secret}}",
+              "host": ["{{public_url}}"],
+              "path": ["api", "webhooks", "fapshi", "{{fapshi_webhook_secret}}"]
             }
           }
         }
@@ -126,8 +206,16 @@
   ],
   "variable": [
     { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "public_url", "value": "http://127.0.0.1:8000" },
     { "key": "token", "value": "" },
     { "key": "refresh_token", "value": "" },
+    { "key": "fapshi_webhook_secret", "value": "change_me_to_a_long_random_string" },
+    { "key": "fapshi_transId", "value": "" },
+    { "key": "meter_id", "value": "1" },
+    { "key": "amount", "value": "500" },
+    { "key": "reference", "value": "ORDER-1001" },
+    { "key": "phone", "value": "67XXXXXXX" },
+    { "key": "medium", "value": "mobile money" },
     { "key": "provider_id", "value": "1" }
   ]
 }

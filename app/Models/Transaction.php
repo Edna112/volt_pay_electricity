@@ -12,6 +12,14 @@ class Transaction extends Model
 
     protected $fillable = ['payment_id', 'gateway', 'gateway_reference', 'amount', 'status', 'response_payload', 'processed_at'];
 
+    protected function casts(): array
+    {
+        return [
+            'response_payload' => 'array',
+            'processed_at' => 'datetime',
+        ];
+    }
+
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class, 'payment_id');

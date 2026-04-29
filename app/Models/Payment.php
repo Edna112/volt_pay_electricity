@@ -11,7 +11,26 @@ class Payment extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'meter_id', 'amount', 'reference', 'status', 'idempotency_key'];
+    protected $fillable = [
+        'user_id',
+        'meter_id',
+        'amount',
+        'platform_fee',
+        'net_amount',
+        'reference',
+        'status',
+        'settlement_status',
+        'settled_at',
+        'settlement_reference',
+        'idempotency_key',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'settled_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {
