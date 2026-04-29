@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'mtn' => [
+        'webhook_secret' => env('MTN_WEBHOOK_SECRET'),
+    ],
+
+    'orange' => [
+        'webhook_secret' => env('ORANGE_WEBHOOK_SECRET'),
+    ],
+
 ];

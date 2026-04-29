@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Services\Eneo\EneoClientInterface;
 use App\Services\Eneo\MockEneoClient;
+use App\Services\Gateway\GatewayClientInterface;
+use App\Services\Gateway\MockGatewayClient;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(EneoClientInterface::class, MockEneoClient::class);
+        $this->app->singleton(GatewayClientInterface::class, MockGatewayClient::class);
     }
 
     /**
