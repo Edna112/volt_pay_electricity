@@ -33,6 +33,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['password', 'remember_token', 'two_factor_secret'];
     /**
      * Get the attributes that should be cast.
      *
@@ -43,6 +44,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'two_factor_enabled_at' => 'datetime',
         ];
     }
 
