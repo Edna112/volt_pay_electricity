@@ -23,7 +23,9 @@ class FapshiDirectPayRequest extends FormRequest
             'reference' => ['required', 'string', 'max:255'],
 
             // Fapshi Direct Pay fields
-            'phone' => ['required', 'string', 'max:20'],
+            // MTN/Orange (CM) numbers are 9 digits (e.g. 67XXXXXXX).
+            // We accept only digits here to avoid ambiguity; frontend can strip +237/spaces before sending.
+            'phone' => ['required', 'regex:/^\d{9}$/'],
             'medium' => ['nullable', 'string', 'in:mobile money,orange money'],
             'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],

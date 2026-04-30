@@ -22,7 +22,8 @@ class FapshiGatewayClient implements GatewayClientInterface
         }
 
         $payload = $transaction->response_payload ?? [];
-        $phone = (string) ($payload['phone'] ?? '');
+        $rawPhone = (string) ($payload['phone'] ?? '');
+        $phone = preg_replace('/\D+/', '', $rawPhone) ?? $rawPhone;
         $medium = $payload['medium'] ?? null;
         $name = $payload['name'] ?? null;
         $email = $payload['email'] ?? null;
@@ -31,6 +32,11 @@ class FapshiGatewayClient implements GatewayClientInterface
         if ($phone === '') {
             throw ValidationException::withMessages([
                 'phone' => ['phone is required for Fapshi direct pay.'],
+            ]);
+        }
+        if (! preg_match('/^\d{9}$/', $phone)) {
+            throw ValidationException::withMessages([
+                'phone' => ['phone must be exactly 9 digits (e.g. 67XXXXXXX).'],
             ]);
         }
 
