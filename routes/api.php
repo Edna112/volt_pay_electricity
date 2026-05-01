@@ -16,6 +16,7 @@ Route::middleware('api')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+    Route::get('/meters', [MeterController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/meters/verify', [MeterController::class, 'verify'])->middleware('auth:sanctum');
     Route::post('/eneo/verify-meter', [EneoController::class, 'verifyMeter'])->middleware('auth:sanctum');
 
